@@ -5,7 +5,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
@@ -35,19 +34,19 @@ public class MainActivity extends Activity {
     byte buffer[];
     int bufferPosition;
     boolean stopThread;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.device_list);
-        startButton = (Button) findViewById(R.id.buttonStart);
-        sendButton = (Button) findViewById(R.id.buttonSend);
-        clearButton = (Button) findViewById(R.id.buttonClear);
-        stopButton = (Button) findViewById(R.id.buttonStop);
-        editText = (EditText) findViewById(R.id.editText);
-        textView = (TextView) findViewById(R.id.textView);
-        setUiEnabled(false);
-
-    }
+    //@Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.device_list);
+//        startButton = (Button) findViewById(R.id.buttonStart);
+//        sendButton = (Button) findViewById(R.id.buttonSend);
+//        clearButton = (Button) findViewById(R.id.buttonClear);
+//        stopButton = (Button) findViewById(R.id.buttonStop);
+//        editText = (EditText) findViewById(R.id.editText);
+//        textView = (TextView) findViewById(R.id.textView);
+//        setUiEnabled(false);
+//
+//    }
 
     public void setUiEnabled(boolean bool)
     {

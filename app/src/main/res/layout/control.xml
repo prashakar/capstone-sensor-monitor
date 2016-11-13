@@ -4,10 +4,52 @@
     android:id="@+id/control"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="android.sensormonitor.Control">
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Transmission Status"
+        android:clickable="false"
+        android:id="@+id/transmissionStatus"
+        android:background="@color/transmissionStatusBtn"
+        android:layout_alignParentTop="true"/>
 
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_below="@+id/transmissionStatus"
+        android:id="@+id/dataList"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/dataStatus"
+        android:layout_above="@+id/dataStatus" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:id="@+id/dataStatus"
+        android:text="System status"
+        android:textSize="60sp"
+        android:background="@color/colorPrimaryDark"
+        android:layout_above="@+id/linear"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linear"
+        android:layout_alignParentBottom="true">
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_weight="1"
+        android:layout_height="100dp"
+        android:text="Devices"
+        android:id="@+id/backDevices"
+        android:onClick="backDevices"
+        android:textSize="20sp"
+        android:layout_gravity="start"
+        android:background="@color/colorAccent"/>
+    <Button
+        android:layout_weight="4"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:id="@+id/connectedStatus"
+        android:textSize="40sp"
+        android:background="@color/scanButton" />
+    </LinearLayout>
 </RelativeLayout>
