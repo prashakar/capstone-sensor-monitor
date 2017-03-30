@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +21,6 @@ import static android.graphics.Color.BLACK;
 import static android.graphics.Color.GRAY;
 import static android.graphics.Color.GREEN;
 import static android.graphics.Color.RED;
-import static android.graphics.Color.YELLOW;
 
 public class Control extends AppCompatActivity {
     private Handler mHandler;
@@ -47,9 +45,7 @@ public class Control extends AppCompatActivity {
         setContentView(R.layout.control);
         final StringBuilder recDataString = new StringBuilder();
         final ArrayList<String> recDataList = new ArrayList<>();
-        final ListView dataList = (ListView)findViewById(R.id.dataList);
         final ArrayAdapter listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, recDataList);
-        dataList.setAdapter(listAdapter);
 
         Button connectedStatusBtn = (Button)findViewById(R.id.connectedStatus);
         connectedStatusBtn.setText("Connected");
@@ -59,75 +55,58 @@ public class Control extends AppCompatActivity {
 
         dataStatus = (Button)findViewById(R.id.dataStatus);
         v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
-        // Vibrate for 500 milliseconds
-//
-//        Thread t = new Thread() {
-//
-//            @Override
-//            public void run() {
-//                try {
-//                    while (!isInterrupted()) {
-//                        Thread.sleep(1000);
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                if (wearCounter > 17){
-//                                    dataStatus.setText("Warning");
-//                                    dataStatus.setBackgroundColor(YELLOW);
-//                                } else if (wearCounter > 30) {
-//                                    dataStatus.setText("Error");
-//                                    dataStatus.setBackgroundColor(RED);
-//                                } else if (wearCounter == 0){
-//
-//                                } else {
-//                                    dataStatus.setText("System OK" + wearCounter);
-//                                    dataStatus.setBackgroundColor(GREEN);
-//                                }
-//
-//                            }
-//                        });
-//                    }
-//                } catch (InterruptedException e) {
-//                }
-//            }
-//        };
-//        t.start();
+
+        dataStatus.setText("Initializing system...");
 
         mHandler = new Handler() {
+            public int totalDataCounter;
+
+            private boolean errorStatus = false;
+
+
             public void handleMessage(android.os.Message msg) {
                 if (msg.what == handlerState) {                                     //if message is what we want
                     String readMessage = (String) msg.obj;                                                                // msg.arg1 = bytes from connect thread
                     //System.out.println(readMessage);
+
+                    System.out.println("TOTAL COUNTER " + totalDataCounter);
+                    System.out.println("WEAR COUNTER " + wearCounter);
+
+                    totalDataCounter += 1;
                     if (readMessage.contains("*")){
                         readMessage = readMessage.replace("*","");
                         wearCounter += 1;
                     }
 
-                    if (wearCounter == 50){
-                        v.vibrate(100);
-                    } else if (wearCounter == 70){
-                        v.vibrate(100);
-                    } else if (wearCounter == 90){
-                        v.vibrate(100);
-                    }
-                    if (wearCounter > 30) {
-                        dataStatus.setText("Critical Error " + wearCounter);
-                        dataStatus.setBackgroundColor(RED);
+                    // 10 data sets collected
+                    if (totalDataCounter >= 6) {
+                        // analyze data
+                        if (wearCounter >= 3) {
+                            // show error state
+                            dataStatus.setText("Critical Error");
+                            dataStatus.setBackgroundColor(RED);
+                            v.vibrate(800);
 
-                    } else if (wearCounter > 17){
-                        dataStatus.setText("Warning");
-                        dataStatus.setBackgroundColor(YELLOW);
-                    } else if (wearCounter == 0){
-                    } else {
-                        dataStatus.setText("System OK");
-                        dataStatus.setBackgroundColor(GREEN);
+                            errorStatus = true;
+
+                        } else {
+                            // show ok state
+                            if (!errorStatus) {
+                                dataStatus.setText("System OK");
+                                dataStatus.setBackgroundColor(GREEN);
+
+                            }
+                        }
+                        totalDataCounter = 0;
+                        wearCounter = 0;
                     }
-                    recDataString.append(readMessage);                                      //keep appending to string until ~
-                    recDataList.add(0, readMessage);
+
+//                    recDataString.append(readMessage);                                      //keep appending to string until ~
+//                    recDataList.add(0, readMessage);
                     //recDataList.add(readMessage);
 //                    listAdapter.setNotifyOnChange(false);
 //                    listAdapter.add(readMessage);
-                    listAdapter.notifyDataSetChanged();
+//                    listAdapter.notifyDataSetChanged();
                     int endOfLineIndex = recDataString.indexOf("END");                    // determine the end-of-line
 
                     if (recDataString.toString().contains("~")) {
@@ -145,30 +124,6 @@ public class Control extends AppCompatActivity {
                         transmissionStatusBtn.setText("Data monitoring ongoing");
                         transmissionStatusBtn.setBackgroundColor(GREEN);
                     }
-
-
-//                    if (endOfLineIndex > 0) {                                           // make sure there data before ~
-//                        String dataInPrint = recDataString.substring(0, endOfLineIndex);    // extract string
-//                        txtString.setText("Data Received = " + dataInPrint);
-//                        int dataLength = dataInPrint.length();                          //get length of data received
-//                        txtStringLength.setText("String Length = " + String.valueOf(dataLength));
-//
-//                        if (recDataString.charAt(0) == '#')                             //if it starts with # we know it is what we are looking for
-//                        {
-//                            String sensor0 = recDataString.substring(1, 5);             //get sensor value from string between indices 1-5
-//                            String sensor1 = recDataString.substring(6, 10);            //same again...
-//                            String sensor2 = recDataString.substring(11, 15);
-//                            String sensor3 = recDataString.substring(16, 20);
-//
-//                            sensorView0.setText(" Sensor 0 Voltage = " + sensor0 + "V");    //update the textviews with sensor values
-//                            sensorView1.setText(" Sensor 1 Voltage = " + sensor1 + "V");
-//                            sensorView2.setText(" Sensor 2 Voltage = " + sensor2 + "V");
-//                            sensorView3.setText(" Sensor 3 Voltage = " + sensor3 + "V");
-//                        }
-//                        recDataString.delete(0, recDataString.length());                    //clear all string data
-//                        // strIncom =" ";
-//                        dataInPrint = " ";
-//                    }
                 }
             }
         };
